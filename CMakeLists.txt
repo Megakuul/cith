@@ -8,7 +8,7 @@ if (CITH_BUILD_VECTOR)
     add_subdirectory(cvector)
 endif()
 
-if (CITH_BUILD_STR)
+if (CITH_BUILD_STRINGS)
     add_subdirectory(cstrings)
 endif()
 
