@@ -1,3 +1,0 @@
-/home/linus/Documents/Repos/Cith_debug/cith/cvector/build/CMakeFiles/cvector.dir
-/home/linus/Documents/Repos/Cith_debug/cith/cvector/build/CMakeFiles/edit_cache.dir
-/home/linus/Documents/Repos/Cith_debug/cith/cvector/build/CMakeFiles/rebuild_cache.dir
