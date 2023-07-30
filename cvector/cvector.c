@@ -70,4 +70,7 @@ void vecfree(cvector *v) {
     free(v->data[i]);
   }
   free(v->data);
+  v->data = NULL;
+  v->size = 0;
+  v->capacity = 0;
 }
