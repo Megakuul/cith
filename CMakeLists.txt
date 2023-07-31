@@ -1,17 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 project(cith C)
 
-option(CITH_BUILD_VECTOR "Build cith vector component" ON)
-option(CITH_BUILD_STRINGS "Build cith strings component" ON)
+file(GLOB SOURCE "*.c")
 
-if (CITH_BUILD_VECTOR)
-    add_subdirectory(cvector)
-endif()
-
-if (CITH_BUILD_STRINGS)
-    add_subdirectory(cstrings)
-endif()
-
-add_library(cith INTERFACE)
-target_include_directories(cith INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(cith INTERFACE cvector cstrings)
+add_library(cith ${SOURCE})
+target_include_directories(cith PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

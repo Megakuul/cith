@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cvector.h>
+#include <cresult.h>
 
 /* 
    Size and capacity are not intendet to use,
@@ -20,15 +21,21 @@ typedef struct {
   size_t capacity;
 } cstring;
 
-void strinit(cstring *s);
+CRESULT(cstring)
 
-char* strset(cstring *s, const char* new_str);
+void strinit(cstring *s, const char* new_str);
 
-char* stradd(cstring *s, const char* add_str);
+cres strset(cstring *s, const char* new_str);
 
-cvector strsplit(cstring *s, const char split_char);
+cres stradd(cstring *s, const char* add_str);
 
-char* strcap(cstring *s, size_t new_cap);
+cres_cstring strslice(cstring *s, size_t start, size_t end);
+
+cres_cvector strsplit(cstring *s, const char split_char);
+
+void strfit(cstring *s);
+
+cres strcap(cstring *s, size_t new_cap);
 
 void strfree(cstring *s);
 

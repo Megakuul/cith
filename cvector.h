@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <cresult.h>
 
 typedef struct {
   void **data;
@@ -10,15 +12,17 @@ typedef struct {
   size_t size;
 } cvector;
 
+CRESULT(cvector)
+  
 void vecinit(cvector *v);
 
-char* vecpush(cvector *v, void *value, size_t size);
+cres vecpush(cvector *v, void *value, size_t size);
 
-void* vecget(cvector *v, size_t i);
+cres_void_ptr vecget(cvector *v, size_t i);
 
-char* vecdel(cvector *v, size_t i);
+cres vecdel(cvector *v, size_t i);
 
-char* vecshrink(cvector *v);
+cres vecshrink(cvector *v);
 
 void vecfree(cvector *v);
 
