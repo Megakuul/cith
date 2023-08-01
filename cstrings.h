@@ -21,7 +21,10 @@ typedef struct {
   size_t capacity;
 } cstring;
 
-CRESULT(cstring)
+CRESULT_PTR(cstring);
+CRESULT(cstring);
+CVECTOR(cstring);
+CRESULT(cvector_cstring_ptr);
 
 void strinit(cstring *s, const char* new_str);
 
@@ -31,7 +34,7 @@ cres stradd(cstring *s, const char* add_str);
 
 cres_cstring strslice(cstring *s, size_t start, size_t end);
 
-cres_cvector strsplit(cstring *s, const char split_char);
+cres_cvector_cstring_ptr strsplit(cstring *s, const char split_char);
 
 void strfit(cstring *s);
 

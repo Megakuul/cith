@@ -72,10 +72,10 @@ cres_cstring strslice(cstring *s, size_t start, size_t end) {
 }
 
 
-cres_cvector strsplit(cstring *s, const char split_char) {
-  cres_cvector res = {NULL, NULL};
-  cvector vecbuf;
-  vecinit(&vecbuf);
+cres_cvector_cstring_ptr strsplit(cstring *s, const char split_char) {
+  cres_cvector_cstring_ptr res = {NULL, NULL};
+  cvector_cstring_ptr vecbuf;
+  vecinit_cstring_ptr(&vecbuf);
 
   size_t last_slice = 0;
   for (size_t i = 0; i < s->size; i++) {
@@ -102,9 +102,9 @@ cres_cvector strsplit(cstring *s, const char split_char) {
 
       strfit(&slice_buf);
       
-      cres push_res = vecpush(&vecbuf, &slice_buf, sizeof(slice_buf));
+      cres push_res = vecpush_cstring_ptr(&vecbuf, &slice_buf, AUTO_SIZE);
       if (push_res.e != NULL) {
-	vecfree(&vecbuf);
+	vecfree_cstring_ptr(&vecbuf);
 	strfree(&slice_buf);
 	res.e = push_res.e;
 	return res;

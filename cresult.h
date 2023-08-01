@@ -12,7 +12,7 @@
   typedef struct {				\
     char* e;					\
     T* r;					\
-  } cres_##T_ptr;
+  } cres_##T##_ptr;
 
 
 typedef struct {
@@ -23,6 +23,5 @@ typedef struct {
 typedef struct {
   char* e;
 } cres;
-
 
 #endif
