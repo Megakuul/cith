@@ -12,7 +12,7 @@ file(GLOB CITH_SOURCES "cith/*.c")
 set(CITH_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/cith)
 
 add_executable(... ${CITH_SOURCES})
-// or add_library(... ${CITH_SOURCES})
+# or add_library(... ${CITH_SOURCES})
 
 target_include_directories(... ${CITH_INCLUDES})
 ```
