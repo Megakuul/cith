@@ -3,7 +3,7 @@
 #define OUTOFBOUNDS_SERR "START or END is out of string bound"
 #define STR_GROWTH_FACTOR 1.6
 
-#include <cstrings.h>
+#include <cith.h>
 
 void strinit(cstring *s, const char* new_str) {
   s->str = NULL;
@@ -72,10 +72,10 @@ cres_cstring strslice(cstring *s, size_t start, size_t end) {
 }
 
 
-cres_cvector_cstring_ptr strsplit(cstring *s, const char split_char) {
-  cres_cvector_cstring_ptr res = {NULL, NULL};
-  cvector_cstring_ptr vecbuf;
-  vecinit_cstring_ptr(&vecbuf);
+cres_cvec strsplit(cstring *s, const char split_char) {
+  cres_cvec res = {NULL, NULL};
+  cvec vecbuf;
+  vecinit(&vecbuf);
 
   size_t last_slice = 0;
   for (size_t i = 0; i < s->size; i++) {
@@ -99,12 +99,11 @@ cres_cvector_cstring_ptr strsplit(cstring *s, const char split_char) {
       
       strncpy(slice_buf.str, &s->str[last_slice], i-last_slice);
       slice_buf.str[slice_size-1] = '\0';
-
-      strfit(&slice_buf);
       
-      cres push_res = vecpush_cstring_ptr(&vecbuf, &slice_buf, AUTO_SIZE);
+      strfit(&slice_buf);
+      cres push_res = vecpush(&vecbuf, &slice_buf, sizeof(slice_buf));
       if (push_res.e != NULL) {
-	vecfree_cstring_ptr(&vecbuf);
+	vecfree(&vecbuf);
 	strfree(&slice_buf);
 	res.e = push_res.e;
 	return res;
