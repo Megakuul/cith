@@ -72,7 +72,11 @@ void strinit(cstring *s, const char* new_str);
 
 cres strset(cstring *s, const char* new_str);
 
+cres strsetc(cstring *s, const char new_char);
+
 cres stradd(cstring *s, const char* add_str);
+
+cres straddc(cstring *s, const char add_char);
 
 cres_cstring strslice(cstring *s, size_t start, size_t end);
 

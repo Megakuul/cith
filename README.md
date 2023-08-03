@@ -134,6 +134,8 @@ if (res!=NULL) {
 }
 ```
 
+To a single character you can use it exactly the same way, but with *strsetc* name and a char as second argument;
+
 **stradd**
 
 This function is used to append a string to the string and can be used like this:
@@ -144,6 +146,8 @@ if (res!=NULL) {
    fprintf(stderr, "Error: %s\n", res.e);
 }
 ```
+
+To append a single character you can use it exactly the same way, but with *straddc* name and a char as second argument;
 
 **strslice**
 

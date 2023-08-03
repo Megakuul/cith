@@ -32,6 +32,24 @@ cres strset(cstring *s, const char* new_str) {
   return res;
 }
 
+cres strsetc(cstring *s, const char new_char) {
+  cres res = {NULL};
+  size_t new_size = 2;
+  size_t new_capacity = new_size * STR_GROWTH_FACTOR;
+  if (s->capacity < new_capacity) {
+    s->str = realloc(s->str, new_capacity * sizeof(char));
+    if (!s->str) {
+      res.e = REALLOC_SERR;
+      return res;
+    }
+    s->capacity = new_capacity;
+  }
+  s->str[0] = new_char;
+  s->str[1] = '\0';
+  s->size = new_size;
+  return res;
+}
+
 cres stradd(cstring *s, const char* add_str) {
   cres res = {NULL};
   // If string is empty it will add space for nullterminator
@@ -47,6 +65,25 @@ cres stradd(cstring *s, const char* add_str) {
     s->capacity = new_capacity;
   }
   strcpy(&s->str[s->size - nullter], add_str);
+  s->size = new_size;
+  return res;
+}
+
+cres straddc(cstring *s, const char add_char) {
+  cres res = {NULL};
+  size_t nullter = s->size == 0 ? 1 : 0;
+  size_t new_size = 1 + s->size + nullter;
+  size_t new_capacity = new_size * STR_GROWTH_FACTOR;
+  if (s->capacity < new_capacity) {
+    s->str = realloc(s->str, new_capacity * sizeof(char));
+    if (!s->str) {
+      res.e = REALLOC_SERR;
+      return res;
+    }
+    s->capacity = new_capacity;
+  }
+  s->str[s->size-nullter] = add_char;
+  s->str[s->size-nullter+1] = '\0';
   s->size = new_size;
   return res;
 }
