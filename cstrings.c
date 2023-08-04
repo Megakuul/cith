@@ -1,3 +1,4 @@
+#define FORMAT_SERR "Failed to format string"
 #define REALLOC_SERR "Failed to reallocate string"
 #define SIZE_SERR "START cannot be higher then END of slice"
 #define OUTOFBOUNDS_SERR "START or END is out of string bound"
@@ -85,6 +86,55 @@ cres straddc(cstring *s, const char add_char) {
   s->str[s->size-nullter] = add_char;
   s->str[s->size-nullter+1] = '\0';
   s->size = new_size;
+  return res;
+}
+
+cres strcsprintf(cstring *s, const char *format, ...) {
+  cres res = {NULL};
+
+  va_list args;
+  va_start(args, format);
+  int length = vsnprintf(NULL, 0, format, args);
+  if (length < 0) {
+    res.e = FORMAT_SERR;
+    return res;
+  }
+
+  cres err = strcap(s, length + 1);
+  if (err.e!=NULL) {
+    res.e = err.e;
+    return res;
+  }
+  vsnprintf(s->str, length + 1, format, args);
+
+  va_end(args);
+
+  return res;
+}
+
+cres_cstring csprintf(const char *format, ...) {
+  cres_cstring res = {NULL, NULL};
+  cstring strbuf;
+  strinit(&strbuf, NULL);
+  
+  va_list args;
+  va_start(args, format);
+  int length = vsnprintf(NULL, 0, format, args);
+  if (length < 0) {
+    res.e = FORMAT_SERR;
+    return res;
+  }
+
+  cres err = strcap(&strbuf, length + 1);
+  if (err.e!=NULL) {
+    res.e = err.e;
+    return res;
+  }
+  vsnprintf(strbuf.str, length + 1, format, args);
+  
+  va_end(args);
+
+  res.r = strbuf;
   return res;
 }
 

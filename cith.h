@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 /* CRESULT ----------------------------------- CRESULT */
 
@@ -54,6 +55,9 @@ cres_void_ptr vecget(cvec *v,size_t i);
 
 void vecfree(cvec *v);
 
+typedef void (*vecfreefunc)(void*);
+void vecfreef(cvec *v, vecfreefunc func);
+
 /* CVEC ----------------------------------- CVEC */
 
 
@@ -77,6 +81,10 @@ cres strsetc(cstring *s, const char new_char);
 cres stradd(cstring *s, const char* add_str);
 
 cres straddc(cstring *s, const char add_char);
+
+cres strcsprintf(cstring *s, const char *format, ...);
+
+cres_cstring csprintf(const char *format, ...);
 
 cres_cstring strslice(cstring *s, size_t start, size_t end);
 

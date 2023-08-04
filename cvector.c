@@ -83,3 +83,14 @@ void vecfree(cvec *v) {
   v->size = 0;
   v->capacity = 0;
 }
+
+void vecfreef(cvec *v, vecfreefunc func) {
+  for (size_t i = 0; i < v->size; ++i) {
+    func(v->data[i]);
+    free(v->data[i]);
+  }
+  free(v->data);
+  v->data = NULL;
+  v->size = 0;
+  v->capacity = 0;  
+}

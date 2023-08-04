@@ -129,7 +129,7 @@ This function is used to set a value to the string and can be used like this:
 
 ```c
 cres res = strset(&mystr, "New string");
-if (res!=NULL) {
+if (res.e!=NULL) {
    fprintf(stderr, "Error: %s\n", res.e);
 }
 ```
@@ -142,12 +142,29 @@ This function is used to append a string to the string and can be used like this
 
 ```c
 cres res = stradd(&mystr, " im a suffix");
-if (res!=NULL) {
+if (res.e!=NULL) {
    fprintf(stderr, "Error: %s\n", res.e);
 }
 ```
 
 To append a single character you can use it exactly the same way, but with *straddc* name and a char as second argument;
+
+**csprintf**
+
+This function is used to format a string and can be used like this:
+
+```c
+cres_cstring res = csprintf("Lets format a %s and a int [%i]", "string", 187);
+if (res.e!=NULL) {
+   fprintf(stderr, "Error: %s\n", res.e);
+}
+
+printf("Formated: %s\n", res.r.str);
+// Important the res is a cstring, remember to free it
+strfree(&res.r);
+```
+
+If you want to use it by using a cstring buffer, you can do this aswell with *strcsprintf*, this function does exactly the same, buf takes a cstring as first argument and does return a raw cres.
 
 **strslice**
 
@@ -160,6 +177,8 @@ if (myslice.e!=NULL) {
    exit(1);
 }
 printf("Success: %s\n", myslice.r.str);
+// Important the slice is a cstring, remember to free it
+strfree(&myslice.r);
 ```
 
 **strsplit**
@@ -178,6 +197,10 @@ for (int i = 0; i < mylist.r.size; i++) {
   cstring* newstr = (cstring*)ptr;
   printf("Found: %s\n", newstr->str);
 }
+
+// Remember that the char* from the listelements is not deallocated with vecfree
+// For this you can use *vecfreef* with *strfree*
+vecfreef(&mylist.r, (vecfreefunc)strfree);
 ```
 
 **strcap**
@@ -186,7 +209,7 @@ This function is used to reset the capacity of the string and can be used like t
 
 ```c
 cres res = strcap(&mystr, 20);
-if (res!=NULL) {
+if (res.e!=NULL) {
    fprintf(stderr, "Error: %s\n", res.e);
 }
 ```
@@ -200,7 +223,7 @@ This function is used to set the strings size to the actual lenght (+1) of the s
 ```c
 // if string looks like this "Hallo Grüessech\0\0\0\0" the size is 19
 cres res = strfit(&mystr);
-if (res!=NULL) {
+if (res.e!=NULL) {
    fprintf(stderr, "Error: %s\n", res.e);
 }
 
@@ -218,7 +241,7 @@ remove the extra space of the capacity you can shrink it like:
 ```c
 // cap is 1024 and size is 754
 cres res = strshrink(&mystr);
-if (res!=NULL) {
+if (res.e!=NULL) {
    fprintf(stderr, "Error: %s\n", res.e);
 }
 
@@ -238,4 +261,137 @@ strfree(&mystr);
 #### CVECTOR
 
 CVector is a dynamic array of void pointers that point to heap allocated memory.
-Will do the docs tomorrow im tired
+
+**vecinit**
+
+This function is used to initialize a vector and is used like:
+
+```c
+cvec myvec;
+vecinit(&myvec);
+```
+
+**vecpush**
+
+This function is used to push a value at the end of the array and is used like this
+
+```c
+// Strings
+char* name = "Karlo";
+cres res = vecpush(&myvec, name, strlen(name) + 1);
+if (res.e!=NULL) {
+   fprintf(stderr, "Error: %s\n", res.e);
+   exit(1);
+}
+
+// CStrings
+cstring first_name = "Kater";
+cres res = vecpush(&myvec, &first_name, sizeof(first_name));
+if (res.e!=NULL) {
+   fprintf(stderr, "Error: %s\n", res.e);
+   exit(1);
+}
+
+// Other types like integer
+int age = 54;
+cres res = vecpush(&myvec, &age, sizeof(age));
+if (res.e!=NULL) {
+   fprintf(stderr, "Error: %s\n", res.e);
+   exit(1);
+}
+
+// The vector looks now like this
+/*
+The Vector now looks something like this:
+Whereas 111 ressembles the myvec.data attribute.
+
+Stack
+|ptr	|value
+ 111	 777
+ 112	 187
+ 113	 999
+
+Heap (anywhere)
+|ptr	 |value
+ 187	  first_name
+ 777	  'K'
+ 778	  'a'
+ 779	  'r'
+ 780	  'l'
+ 781	  'o'
+ 782	  '\0'
+ 999	  54
+*/
+```
+
+*Important* the variable that is provided to the vecpush function (e.g. age or first_name) is copied to the heap, so if the local variable like age/first_name is deallocated, it will still be present.
+
+**vecdel**
+
+This function deletes a value out of the vector and moves the other vector pointers to the left. You can use it like this
+
+```c
+cres res = vecdel(&myvec, 2);
+if (res.e!=NULL) {
+   fprintf(stderr, "Error: %s\n", res.e);
+   exit(1);
+}
+
+/*
+Important: The vector will deallocate its heap memory, but if you allocated a pointer to other memory (like a cstring does),
+you also need to deallocate this object.
+*/
+```
+
+**vecshrink**
+
+This function will shrink the vectors capacity to the vectors size, you can use it like
+
+```c
+cres res = vecshrink(&myvec);
+if (res.e!=NULL) {
+   fprintf(stderr, "Error: %s\n", res.e);
+   exit(1);
+}
+```
+
+**vecget**
+
+This function will safely getting a value of the vector without risking to access memory you its not supposed to access. You can use it like this
+
+```c
+cres_void_ptr value_res = vecget(&myvec, 2);
+if (value_res.e!=NULL) {
+   fprintf(stderr, "Error: %s\n", value_res.e);
+   exit(1);
+}
+
+// Usually you will need to cast the value to its datatype
+printf("Value found: %i\n", (int)value_res.r);
+
+// Vecget is in this example the same as myvec.data[2] but if the value is out of bound it will return a *out of bound error* instead of accessing unexpected memory.
+```
+
+**vecfree**
+
+This function will free the vector and all of its allocated heap memory, use it like this
+
+```c
+vecfree(&myvec);
+```
+
+**vecfreef**
+
+This function will free the vector and all of its allocated heap memory, in addition you can provide a function that will be executed on every memory block before deallocation, you can use it like
+
+```c
+vecfreef(&myvec, (vecfreefunc)strfree);
+```
+
+It takes a function with following type as second argument
+```c
+typedef void (*vecfreefunc)(void*);
+```
+The function takes one argument (void*) that is the current item.
+
+A typicall usecase is when you have a cstring vector, on this vector you also need to free every single cstring from the vector. To do so, you can just use strfree and cast it to vecfreefunc.
