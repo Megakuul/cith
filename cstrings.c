@@ -83,8 +83,8 @@ cres straddc(cstring *s, const char add_char) {
     }
     s->capacity = new_capacity;
   }
-  s->str[s->size-nullter] = add_char;
-  s->str[s->size-nullter+1] = '\0';
+  s->str[s->size-nullter-1] = add_char;
+  s->str[s->size-nullter] = '\0';
   s->size = new_size;
   return res;
 }
