@@ -3,6 +3,8 @@
 #define IOOR_VERR "Index is out of range"
 #define OUTOFBOUNDS_VERR "Element is out of Bound"
 
+#define VEC_GROWTH_FACTOR 1.87
+
 #include <cith.h>
 
 void vecinit(cvec *v) {
@@ -14,7 +16,7 @@ void vecinit(cvec *v) {
 cres vecpush(cvec *v, void *value, size_t size) {
   cres res = {NULL};
   if (v->size == v->capacity) {
-    v->capacity = v->capacity == 0 ? 1 : v->capacity * 2;
+    v->capacity = (v->capacity+1) * VEC_GROWTH_FACTOR;
     v->data = realloc(v->data, v->capacity * sizeof(void*));
     if (!v->data) {
       res.e = REALLOC_VERR;

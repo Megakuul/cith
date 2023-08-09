@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <search.h>
 
 /* CRESULT ----------------------------------- CRESULT */
 
@@ -97,5 +98,23 @@ cres strcap(cstring *s, size_t new_cap);
 void strfree(cstring *s);
 
 /* CSTRING ----------------------------------- CSTRING */
+
+
+/* CMAP ----------------------------------------- CMAP */
+
+typedef struct {
+  void **data;
+  int capacity;
+  int size;
+} cmap;
+
+size_t maphash(char*key, int capacity);
+
+cres mapinit(cmap*c, int initialsize);
+
+cres mapadd(cmap*c, char*key, void*value, size_t valuesize);
+
+
+/* CMAP ----------------------------------------- CMAP */
 
 #endif
