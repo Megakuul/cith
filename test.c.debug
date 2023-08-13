@@ -8,7 +8,7 @@
 
 #include <cith.h>
 
-#define NUM_ENTRIES 100000
+#define NUM_ENTRIES 10000
 #define MAX_KEY_LENGTH 20
 #define MAX_VALUE_LENGTH 50
 
@@ -52,6 +52,7 @@ void searchtest() {
 
 void cithtest() {
     cmap mymap;
+    
     mapinit(&mymap, NUM_ENTRIES);
     
     for (int i = 0; i < NUM_ENTRIES; i++) {
@@ -75,6 +76,42 @@ void cithtest() {
     }
 }
 
+void cithxtest() {
+    cxmap mymap;
+    
+    xmapinit(&mymap, NUM_ENTRIES, NUM_ENTRIES*sizeof(char)*(MAX_VALUE_LENGTH+1));
+
+    for (int i = 0; i < NUM_ENTRIES; i++) {
+        // generate a random key
+        int key_length = rand() % MAX_KEY_LENGTH + 1;
+        char key[key_length + 1];
+        for (int j = 0; j < key_length; j++) {
+            key[j] = 'a' + rand() % 26;
+        }
+        key[key_length] = '\0';
+
+        // generate a random value
+        int value_length = rand() % MAX_VALUE_LENGTH + 1;
+        char value[value_length + 1];
+        for (int j = 0; j < value_length; j++) {
+            value[j] = 'a' + rand() % 26;
+        }
+        value[value_length] = '\0';
+        xmapadd(&mymap, key, value, strlen(value) + 1);
+    }
+}
+
+/* Protocoll
+   10K random values between 1-50 chars
+   cmap:
+   Searched in	 0.005368 seconds
+   Cithed in	 0.013824 seconds
+   V1 cxmap:
+   Searched in	 0.005255 seconds
+   Cithed in	 0.014571 seconds
+   XCithed in	 0.201153 seconds
+   V2 cxmap:
+*/
 int main(void) {
     clock_t start_time = clock();
 
@@ -90,6 +127,12 @@ int main(void) {
     elapsed_time = (double)(clock() - start_time) / CLOCKS_PER_SEC;
     printf("Cithed in\t %f seconds\n", elapsed_time);
 
+    start_time = clock();
+
+    cithxtest();
+    
+    elapsed_time = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+    printf("XCithed in\t %f seconds\n", elapsed_time);
     
     exit(0);
 }

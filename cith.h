@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 /* CRESULT ----------------------------------- CRESULT */
 
@@ -105,7 +106,6 @@ typedef struct {
   void **data;
   int capacity;
   int size;
-  int collision_index;
 } cmap;
 
 size_t maphash(char*key);
@@ -117,20 +117,50 @@ cres mapadd(cmap*c, char*key, void*value, size_t valuesize);
 
 /* CMAP ----------------------------------------- CMAP */
 
-/* CPALLOC ----------------------------------------- CPALLOC */
+/* CPOOL ----------------------------------------- CPOOL */
 
 typedef struct {
+  bool free;
   int size;
   void *ptr;
 } cblock;
 
-typedef struct {
+typedef struct cpool cpool;
+
+struct cpool {
   int poolsize;
-  cvec *free_list;
+  cvec blockmap;
   void *data;
   cpool *nextpool;
-} cpool;
+};
 
-/* CPALLOC ----------------------------------------- CPALLOC */
+cres poolinit(cpool *c, int size);
+
+cres_void_ptr poolalloc(cpool *c, int size);
+
+cres_void_ptr poolrealloc(cpool *c, void *ptr, int size);
+
+void poolfree(cpool *c, void* element);
+
+void pooldestroy(cpool *c);
+
+/* CPOOL ----------------------------------------- CPOOL */
+
+
+/* CXMAP ----------------------------------------- CXMAP */
+
+typedef struct {
+  void **data;
+  int capacity;
+  int size;
+  cpool pool;
+} cxmap;
+
+cres xmapinit(cxmap *c, int initialsize, int poolsize);
+
+cres xmapadd(cxmap *c, char* key, void* value, size_t valuesize);
+
+/* CXMAP ----------------------------------------- CXMAP */
+
 
 #endif
