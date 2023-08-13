@@ -1,0 +1,95 @@
+#define _GNU_SOURCE
+
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <search.h>
+
+#include <cith.h>
+
+#define NUM_ENTRIES 100000
+#define MAX_KEY_LENGTH 20
+#define MAX_VALUE_LENGTH 50
+
+
+void searchtest() {
+    struct hsearch_data hash;
+    memset(&hash, 0, sizeof(hash));
+    if (hcreate_r(NUM_ENTRIES, &hash) == 0) {
+      perror("hcreate_r");
+      exit(1);
+    }
+        
+    for (int i = 0; i < NUM_ENTRIES; i++) {
+        // generate a random key
+        int key_length = rand() % MAX_KEY_LENGTH + 1;
+        char key[key_length + 1];
+        for (int j = 0; j < key_length; j++) {
+            key[j] = 'a' + rand() % 26;
+        }
+        key[key_length] = '\0';
+
+        // generate a random value
+        int value_length = rand() % MAX_VALUE_LENGTH + 1;
+        char value[value_length + 1];
+        for (int j = 0; j < value_length; j++) {
+            value[j] = 'a' + rand() % 26;
+        }
+        value[value_length] = '\0';
+
+	ENTRY e, *ep;
+	e.key = key;
+	e.data = (void*)value;
+	if (hsearch_r(e, ENTER, &ep, &hash) == 0) {
+	  perror("hsearch_r");
+	  exit(1);
+	}
+    }
+
+    hdestroy_r(&hash);
+}
+
+void cithtest() {
+    cmap mymap;
+    mapinit(&mymap, NUM_ENTRIES);
+    
+    for (int i = 0; i < NUM_ENTRIES; i++) {
+        // generate a random key
+        int key_length = rand() % MAX_KEY_LENGTH + 1;
+        char key[key_length + 1];
+        for (int j = 0; j < key_length; j++) {
+            key[j] = 'a' + rand() % 26;
+        }
+        key[key_length] = '\0';
+
+        // generate a random value
+        int value_length = rand() % MAX_VALUE_LENGTH + 1;
+        char value[value_length + 1];
+        for (int j = 0; j < value_length; j++) {
+            value[j] = 'a' + rand() % 26;
+        }
+        value[value_length] = '\0';
+
+        mapadd(&mymap, key, value, strlen(value) + 1);
+    }
+}
+
+int main(void) {
+    clock_t start_time = clock();
+
+    searchtest();
+    
+    double elapsed_time = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+    printf("Searched in\t %f seconds\n", elapsed_time);
+
+    start_time = clock();
+
+    cithtest();
+    
+    elapsed_time = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+    printf("Cithed in\t %f seconds\n", elapsed_time);
+
+    
+    exit(0);
+}

@@ -1,6 +1,8 @@
 *.out
 .vscode
 
+test.c
+
 */build/**
 
 # Ignore Emacs backup and autosave files

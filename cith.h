@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <search.h>
 
 /* CRESULT ----------------------------------- CRESULT */
 
@@ -106,9 +105,10 @@ typedef struct {
   void **data;
   int capacity;
   int size;
+  int collision_index;
 } cmap;
 
-size_t maphash(char*key, int capacity);
+size_t maphash(char*key);
 
 cres mapinit(cmap*c, int initialsize);
 
@@ -116,5 +116,21 @@ cres mapadd(cmap*c, char*key, void*value, size_t valuesize);
 
 
 /* CMAP ----------------------------------------- CMAP */
+
+/* CPALLOC ----------------------------------------- CPALLOC */
+
+typedef struct {
+  int size;
+  void *ptr;
+} cblock;
+
+typedef struct {
+  int poolsize;
+  cvec *free_list;
+  void *data;
+  cpool *nextpool;
+} cpool;
+
+/* CPALLOC ----------------------------------------- CPALLOC */
 
 #endif
